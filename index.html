@@ -884,6 +884,283 @@ tbody td:first-child { color: var(--fg); font-weight: 500; }
   :root { --sidebar-w: 0px; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET & MOBILE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Hamburger button ── */
+#hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 44px;
+  min-height: 44px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  color: var(--fg);
+  cursor: pointer;
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: var(--transition);
+  padding: 0;
+  line-height: 1;
+}
+#hamburger:hover { background: rgba(255,255,255,0.1); border-color: var(--glass-border-hover); }
+
+/* ── Filter toggle button (mobile) ── */
+#filterToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  min-height: 44px;
+  padding: 0 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  color: var(--fg2);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  gap: 5px;
+  transition: var(--transition);
+}
+#filterToggle:hover { background: rgba(255,255,255,0.08); }
+#filterToggle.active { color: var(--accent); border-color: rgba(79,142,247,0.4); }
+
+/* ── Sidebar overlay backdrop ── */
+#sidebarBackdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 49;
+  backdrop-filter: blur(2px);
+}
+#sidebarBackdrop.visible { display: block; }
+
+/* ── Collapsible filter bar ── */
+#filterBar {
+  display: contents; /* no-op on desktop */
+}
+
+/* ══════════════════════════
+   TABLET  768px – 1024px
+   ══════════════════════════ */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-w: 200px;
+  }
+
+  #topbar {
+    gap: 12px;
+    padding: 0 14px;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--topbar-h);
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  #searchWrap { max-width: 240px; }
+
+  .view-tabs { flex-wrap: wrap; }
+  .view-tab { padding: 5px 9px; font-size: 10px; min-height: 36px; }
+
+  .filter-select { font-size: 10px; }
+
+  #layout { padding-top: 56px; }
+}
+
+/* ══════════════════════════
+   MOBILE  < 768px
+   ══════════════════════════ */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-w: 0px;
+    --topbar-h: 56px;
+  }
+
+  html, body { overflow: hidden; }
+
+  /* ── Top bar: single-row with hamburger + search + filter toggle + view switcher ── */
+  #topbar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    height: var(--topbar-h);
+    overflow: visible;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+  }
+
+  /* Show hamburger */
+  #hamburger { display: flex; }
+
+  /* Hide logo text on very small screens */
+  #topbar .logo-text { display: none; }
+  #topbar .logo { gap: 0; }
+  .topbar-divider { display: none; }
+
+  /* Search: full width in second row via filter bar */
+  #searchWrap {
+    flex: 1;
+    max-width: none;
+    min-width: 0;
+  }
+  #searchInput {
+    height: 38px;
+    font-size: 14px; /* prevents iOS zoom */
+  }
+
+  /* Show filter toggle */
+  #filterToggle { display: flex; }
+
+  /* Hide filters inline — they go in the collapsible panel */
+  .filter-group { display: none; }
+  #resultCount { display: none; }
+
+  /* Filter panel (collapsible) */
+  #filterPanel {
+    position: fixed;
+    top: var(--topbar-h);
+    left: 0; right: 0;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 12px 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 98;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  #filterPanel.visible { display: flex; }
+  #filterPanel .filter-select {
+    width: 100%;
+    height: 44px;
+    font-size: 14px;
+    padding: 0 36px 0 12px;
+  }
+  #filterPanel #fpResultCount {
+    font-size: 11px;
+    color: var(--fg3);
+    text-align: right;
+  }
+
+  /* Sidebar: hidden by default, slides in as overlay */
+  #sidebar {
+    display: flex !important;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: calc(var(--topbar-h) + 8px);
+    overflow-y: auto;
+  }
+  #sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 40px rgba(0,0,0,0.6);
+  }
+
+  /* Main: full width */
+  #layout {
+    padding-top: var(--topbar-h);
+    padding-left: 0 !important;
+  }
+  #main { width: 100%; }
+
+  /* View switcher: hide tab labels on tiny screens, show icons only */
+  .view-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+  .view-tabs::-webkit-scrollbar { display: none; }
+  .view-tab {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 4px 10px;
+    font-size: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Table: horizontal scroll */
+  #table-view {
+    padding: 8px 10px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table { min-width: 600px; }
+  thead th, tbody td { padding: 8px 10px; font-size: 11px; }
+
+  /* Top 10: single column */
+  .top10-grid { grid-template-columns: 1fr; gap: 12px; }
+  #top10-view { padding: 10px 10px; }
+
+  /* Histogram */
+  #histogram-view { padding: 10px 10px; }
+  #histogram-chart-wrap { height: 280px; padding: 12px; }
+
+  /* Tooltip on mobile: fixed at bottom */
+  #tooltip {
+    position: fixed;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 12px !important;
+    top: auto !important;
+    max-width: none;
+    width: auto;
+    pointer-events: auto;
+  }
+  #tooltip.visible { opacity: 1; }
+
+  /* Font sizes */
+  .stat-value { font-size: 22px; }
+  .tt-title { font-size: 13px; }
+  .tt-exposure-big { font-size: 22px; }
+}
+
+/* ── Touch-friendly interactive targets ── */
+@media (hover: none) and (pointer: coarse) {
+  .view-tab { min-height: 44px; }
+  .filter-select { min-height: 44px; }
+  #clearSearch {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #hamburger { min-width: 44px; min-height: 44px; }
+  #filterToggle { min-height: 44px; }
+  .top10-card { padding: 12px 14px; }
+  .zoom-indicator { padding: 10px 16px; min-height: 44px; }
+
+  /* Touch tooltip: pointer-events on to allow tap-dismiss */
+  #tooltip { pointer-events: auto; }
+}
+
+/* ── Very small phones (< 380px) ── */
+@media (max-width: 380px) {
+  .view-tab span.tab-label { display: none; }
+  #topbar .logo-icon { width: 26px; height: 26px; font-size: 12px; }
+}
+
 </style>
 </head>
 <body>
@@ -898,6 +1175,8 @@ tbody td:first-child { color: var(--fg); font-weight: 500; }
 
 <!-- Top Bar -->
 <div id="topbar">
+  <button id="hamburger" title="Toggle sidebar" aria-label="Toggle sidebar">☰</button>
+
   <div class="logo">
     <div class="logo-icon">🤖</div>
     <div class="logo-text">AI Job Exposure</div>
@@ -924,16 +1203,39 @@ tbody td:first-child { color: var(--fg); font-weight: 500; }
       <option value="8-10">8-10 Very High</option>
     </select>
   </div>
+  <button id="filterToggle" title="Toggle filters">⚙ Filters</button>
   <div class="topbar-divider"></div>
   <div class="view-tabs">
-    <button class="view-tab active" data-view="treemap">🗺 Treemap</button>
-    <button class="view-tab" data-view="scatter">◉ Scatter</button>
-    <button class="view-tab" data-view="table">≡ Table</button>
-    <button class="view-tab" data-view="top10">★ Top 10</button>
-    <button class="view-tab" data-view="histogram">▦ Histogram</button>
+    <button class="view-tab active" data-view="treemap">🗺 <span class="tab-label">Treemap</span></button>
+    <button class="view-tab" data-view="scatter">◉ <span class="tab-label">Scatter</span></button>
+    <button class="view-tab" data-view="table">≡ <span class="tab-label">Table</span></button>
+    <button class="view-tab" data-view="top10">★ <span class="tab-label">Top 10</span></button>
+    <button class="view-tab" data-view="histogram">▦ <span class="tab-label">Histogram</span></button>
   </div>
   <div id="resultCount"></div>
 </div>
+
+<!-- Mobile filter panel (hidden until toggled) -->
+<div id="filterPanel">
+  <select id="fpFilterCat" class="filter-select">
+    <option value="">All Categories</option>
+  </select>
+  <select id="fpFilterEdu" class="filter-select">
+    <option value="">All Education</option>
+  </select>
+  <select id="fpFilterExposure" class="filter-select">
+    <option value="">All Exposure</option>
+    <option value="0-1">0-1 Minimal</option>
+    <option value="2-3">2-3 Low</option>
+    <option value="4-5">4-5 Moderate</option>
+    <option value="6-7">6-7 High</option>
+    <option value="8-10">8-10 Very High</option>
+  </select>
+  <div id="fpResultCount"></div>
+</div>
+
+<!-- Sidebar backdrop (mobile overlay) -->
+<div id="sidebarBackdrop"></div>
 
 <!-- Search Results Dropdown -->
 <div id="searchResults"></div>
@@ -1247,8 +1549,16 @@ function showTooltip(d, x, y) {
 }
 
 function positionTooltip(x, y) {
-  const tw = 360, th = 280;
   const vw = window.innerWidth, vh = window.innerHeight;
+  // On mobile: tooltip is fixed at bottom via CSS, don't position it
+  if (vw <= 768) {
+    tooltip.style.left = '';
+    tooltip.style.top = '';
+    tooltip.style.right = '';
+    tooltip.style.bottom = '';
+    return;
+  }
+  const tw = 360, th = 280;
   let tx = x + 16, ty = y - 20;
   if (tx + tw > vw - 16) tx = x - tw - 16;
   if (ty + th > vh - 16) ty = vh - th - 16;
@@ -1411,6 +1721,9 @@ function applyFilters() {
     return true;
   });
   document.getElementById('resultCount').textContent = `${filteredData.length} of ${RAW_DATA.length}`;
+  // Update mobile filter panel count if it exists
+  const fpCount = document.getElementById('fpResultCount');
+  if (fpCount) fpCount.textContent = `${filteredData.length} results`;
   refreshCurrentView();
 }
 
@@ -1477,7 +1790,12 @@ function renderTreemap() {
     .attr('stroke', 'rgba(0,0,0,0.15)')
     .attr('stroke-width', 0.3);
 
-  // Label text
+  // Label text — reduce density on mobile
+  const mobile = window.innerWidth <= 768;
+  const minLabelW = mobile ? 60 : 45;
+  const minLabelH = mobile ? 28 : 18;
+  const minSubH   = mobile ? 50 : 32;
+  const minSubW   = mobile ? 80 : 55;
   cellG.each(function(d) {
     const item = d.data;
     const cw = d.x1 - d.x0;
@@ -1489,7 +1807,7 @@ function renderTreemap() {
     const isLeaf = !item.children;
     const title = isLeaf ? item.title : (CAT_NAMES[item.category] || item.category);
 
-    if (cw > 45 && ch > 18) {
+    if (cw > minLabelW && ch > minLabelH) {
       const fontSize = Math.min(13, Math.max(9, Math.min(cw / 12, ch / 4)));
       const label = g.append('text')
         .attr('x', 5)
@@ -1502,7 +1820,7 @@ function renderTreemap() {
         .attr('clip-path', `inset(0 0 0 0)`)
         .text(truncText(title, cw, fontSize));
 
-      if (isLeaf && ch > 32 && cw > 55) {
+      if (isLeaf && ch > minSubH && cw > minSubW) {
         const score = item.exposure;
         const sub = `${score ?? '?'}/10 · ${fmtJobs(item.jobs)}`;
         g.append('text')
@@ -1587,7 +1905,8 @@ function renderScatter() {
   const xScale = d3.scaleLinear().domain([0, 10]).range([0, w]);
   const yExt = d3.extent(data, d => d.outlook);
   const yScale = d3.scaleLinear().domain([yExt[0] - 2, yExt[1] + 2]).range([h, 0]);
-  const rScale = d3.scaleSqrt().domain([0, d3.max(data, d => d.jobs || 0)]).range([2, 28]);
+  const isMob = window.innerWidth <= 768;
+  const rScale = d3.scaleSqrt().domain([0, d3.max(data, d => d.jobs || 0)]).range([2, isMob ? 16 : 28]);
 
   // Grid
   g.append('g').attr('class', 'grid')
@@ -1664,7 +1983,13 @@ function renderScatter() {
     .attr('stroke-width', 0.5)
     .style('cursor', 'pointer')
     .on('mousemove', (event, d) => showTooltip(d, event.clientX, event.clientY))
-    .on('mouseleave', hideTooltip);
+    .on('mouseleave', hideTooltip)
+    .on('touchstart', function(event, d) {
+      event.preventDefault();
+      const t = event.touches[0];
+      showTooltip(d, t.clientX, t.clientY);
+    }, { passive: false })
+    .on('touchend', () => setTimeout(hideTooltip, 2500));
 
   bubbles.transition().duration(600).delay((d,i) => i * 2)
     .attr('r', d => rScale(d.jobs || 0));
@@ -1769,6 +2094,11 @@ function renderTop10List(id, items, isLow) {
     card.onmouseenter = (e) => showTooltip(items[i], e.clientX, e.clientY);
     card.onmouseleave = hideTooltip;
     card.onmousemove = (e) => positionTooltip(e.clientX, e.clientY);
+    card.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      showTooltip(items[i], t.clientX, t.clientY);
+    }, { passive: true });
+    card.addEventListener('touchend', () => setTimeout(hideTooltip, 2500), { passive: true });
   });
 }
 
@@ -2019,6 +2349,161 @@ function init() {
     document.getElementById('loading').classList.add('done');
     setTimeout(() => document.getElementById('loading').remove(), 600);
   }, 800);
+
+  // ── Mobile: Hamburger sidebar toggle ──
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    backdrop.classList.add('visible');
+    hamburger.setAttribute('aria-expanded', 'true');
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('visible');
+    hamburger.setAttribute('aria-expanded', 'false');
+  }
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+  backdrop.addEventListener('click', closeSidebar);
+
+  // ── Mobile: Filter panel toggle ──
+  const filterToggle = document.getElementById('filterToggle');
+  const filterPanel = document.getElementById('filterPanel');
+
+  filterToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = filterPanel.classList.toggle('visible');
+    filterToggle.classList.toggle('active', open);
+  });
+  // Close filter panel on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#filterPanel') && !e.target.closest('#filterToggle')) {
+      filterPanel.classList.remove('visible');
+      filterToggle.classList.remove('active');
+    }
+  });
+
+  // ── Populate mobile filter panel options ──
+  const fpCatSel = document.getElementById('fpFilterCat');
+  const fpEduSel = document.getElementById('fpFilterEdu');
+  const fpExposureSel = document.getElementById('fpFilterExposure');
+  const cats2 = [...new Set(RAW_DATA.map(d => d.category))].sort();
+  cats2.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = fmtCat(c);
+    fpCatSel.appendChild(opt);
+  });
+  const edus2 = [...new Set(RAW_DATA.map(d => d.education).filter(Boolean))].sort();
+  edus2.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e; opt.textContent = e;
+    fpEduSel.appendChild(opt);
+  });
+
+  // Sync mobile filters with desktop state and vice versa
+  function syncFiltersToPanel() {
+    fpCatSel.value = filterCat;
+    fpEduSel.value = filterEdu;
+    fpExposureSel.value = filterExposure;
+    const fpCount = document.getElementById('fpResultCount');
+    if (fpCount) fpCount.textContent = filteredData.length + ' results';
+  }
+  fpCatSel.onchange = (e) => {
+    filterCat = e.target.value;
+    document.getElementById('filterCat').value = filterCat;
+    applyFilters();
+    syncFiltersToPanel();
+  };
+  fpEduSel.onchange = (e) => {
+    filterEdu = e.target.value;
+    document.getElementById('filterEdu').value = filterEdu;
+    applyFilters();
+    syncFiltersToPanel();
+  };
+  fpExposureSel.onchange = (e) => {
+    filterExposure = e.target.value;
+    document.getElementById('filterExposure').value = filterExposure;
+    applyFilters();
+    syncFiltersToPanel();
+  };
+  // Initial sync
+  syncFiltersToPanel();
+
+  // ── Touch tooltip support ──
+  // Tooltips on treemap/scatter use mousemove which doesn't fire on touch.
+  // We patch touch events on the SVGs.
+  function addTouchTooltips(svgId) {
+    const el = document.getElementById(svgId);
+    if (!el) return;
+    let touchTooltipTimer;
+    el.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      const cell = target && target.closest('[data-title]');
+      if (cell) {
+        const d = cell.__data__;
+        if (d && d.data) {
+          showTooltip(d.data, touch.clientX, touch.clientY);
+        } else if (d && d.title) {
+          showTooltip(d, touch.clientX, touch.clientY);
+        }
+      }
+    }, { passive: true });
+    el.addEventListener('touchend', () => {
+      setTimeout(hideTooltip, 2000);
+    }, { passive: true });
+  }
+  // Attach after views render
+  setTimeout(() => {
+    addTouchTooltips('treemap-svg');
+    addTouchTooltips('scatter-svg');
+  }, 1200);
+
+  // Also add touch on treemap cells via D3 delegation
+  function patchTreemapTouch() {
+    const svg = document.getElementById('treemap-svg');
+    if (!svg) return;
+    svg.addEventListener('touchstart', function(e) {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const els = document.elementsFromPoint(t.clientX, t.clientY);
+      for (const el of els) {
+        const g = el.closest('.treemap-cell');
+        if (g && g.__data__) {
+          const item = g.__data__.data;
+          if (item && item.title) {
+            showTooltip(item, t.clientX, t.clientY);
+            break;
+          }
+        }
+      }
+    }, { passive: true });
+    svg.addEventListener('touchend', () => setTimeout(hideTooltip, 2500), { passive: true });
+    svg.addEventListener('touchmove', () => hideTooltip(), { passive: true });
+  }
+  // Patch after initial render
+  setTimeout(patchTreemapTouch, 1500);
+  // Re-patch whenever view switches to treemap
+  const origSwitchView = switchView;
+  // (switchView already exists; we patch at DOM level instead via event)
+  document.querySelectorAll('.view-tab[data-view="treemap"]').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(patchTreemapTouch, 300));
+  });
+
+  // ── Close sidebar on view change (mobile UX) ──
+  document.querySelectorAll('.view-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+  // ── isMobile helper for render functions ──
+  window.isMobile = () => window.innerWidth <= 768;
 }
 
 // Wait for D3 + DOM
