@@ -993,8 +993,8 @@ tbody td:first-child { color: var(--fg); font-weight: 500; }
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    gap: 8px;
-    padding: 0 10px;
+    gap: 6px;
+    padding: 0 8px;
     height: var(--topbar-h);
     overflow: visible;
     position: fixed;
@@ -1002,26 +1002,27 @@ tbody td:first-child { color: var(--fg); font-weight: 500; }
   }
 
   /* Show hamburger */
-  #hamburger { display: flex; }
+  #hamburger { display: flex; order: -2; flex-shrink: 0; }
 
-  /* Hide logo text on very small screens */
-  #topbar .logo-text { display: none; }
-  #topbar .logo { gap: 0; }
+  /* Hide logo entirely on mobile — hamburger is enough */
+  #topbar .logo { display: none; }
   .topbar-divider { display: none; }
 
-  /* Search: full width in second row via filter bar */
+  /* Search: takes available space between hamburger and buttons */
   #searchWrap {
     flex: 1;
     max-width: none;
-    min-width: 0;
+    min-width: 80px;
+    order: -1;
   }
   #searchInput {
     height: 38px;
     font-size: 14px; /* prevents iOS zoom */
+    width: 100%;
   }
 
-  /* Show filter toggle */
-  #filterToggle { display: flex; }
+  /* Show filter toggle — compact */
+  #filterToggle { display: flex; flex-shrink: 0; font-size: 13px; padding: 6px 10px; }
 
   /* Hide filters inline — they go in the collapsible panel */
   .filter-group { display: none; }
@@ -1085,13 +1086,14 @@ tbody td:first-child { color: var(--fg); font-weight: 500; }
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    flex-shrink: 0;
+    flex-shrink: 1;
+    min-width: 0;
   }
   .view-tabs::-webkit-scrollbar { display: none; }
   .view-tab {
-    min-height: 44px;
-    min-width: 44px;
-    padding: 4px 10px;
+    min-height: 38px;
+    min-width: 38px;
+    padding: 4px 8px;
     font-size: 10px;
     white-space: nowrap;
     flex-shrink: 0;
